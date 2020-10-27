@@ -17,27 +17,6 @@ kotlin {
         nodejs {
         }
     }
-
-    ios("ios") {
-        binaries {
-            staticLib()
-        }
-    }
-    linuxX64("linux") {
-        binaries {
-            staticLib()
-        }
-    }
-    macosX64("mac") {
-        binaries {
-            staticLib()
-        }
-    }
-    mingwX64("windows") {
-        binaries {
-            staticLib()
-        }
-    }
     sourceSets {
         commonMain {
             dependencies {
@@ -72,20 +51,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-js"))
             }
-        }
-        val nativeMain by creating {
-        }
-        val iosMain by getting {
-            dependsOn(nativeMain)
-        }
-        val linuxMain by getting {
-            dependsOn(nativeMain)
-        }
-        val macMain by getting {
-            dependsOn(nativeMain)
-        }
-        val windowsMain by getting {
-            dependsOn(nativeMain)
         }
     }
 }
