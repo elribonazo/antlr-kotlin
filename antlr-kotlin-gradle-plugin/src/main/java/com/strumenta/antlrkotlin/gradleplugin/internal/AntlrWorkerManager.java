@@ -32,12 +32,12 @@ public class AntlrWorkerManager {
 
     public AntlrResult runWorker(File workingDir, WorkerProcessFactory workerFactory, FileCollection antlrClasspath, AntlrSpec spec) {
         LOGGER.debug("Running worker");
-        RequestHandler<AntlrSpec, AntlrResult> antlrWorker = createWorkerProcess(workingDir, workerFactory, antlrClasspath, spec);
+        RequestHandler<AntlrSpec,AntlrResult> antlrWorker = createWorkerProcess(workingDir, workerFactory, antlrClasspath, spec);
         return antlrWorker.run(spec);
     }
 
-    private RequestHandler<AntlrSpec, AntlrResult> createWorkerProcess(File workingDir, WorkerProcessFactory workerFactory, FileCollection antlrClasspath, AntlrSpec spec) {
-        SingleRequestWorkerProcessBuilder<AntlrSpec, AntlrResult> builder = workerFactory.singleRequestWorker(AntlrExecuter.class);
+    private RequestHandler<AntlrSpec,AntlrResult> createWorkerProcess(File workingDir, WorkerProcessFactory workerFactory, FileCollection antlrClasspath, AntlrSpec spec) {
+        SingleRequestWorkerProcessBuilder<AntlrSpec,AntlrResult> builder = workerFactory.singleRequestWorker( AntlrExecuter.class);
         builder.setBaseName("Gradle ANTLR-Kotlin Worker");
 
         if (antlrClasspath != null) {
@@ -46,7 +46,7 @@ public class AntlrWorkerManager {
         } else {
             LOGGER.debug("Setting no antlr classpath");
         }
-        builder.sharedPackages("antlr", "org.antlr");
+        builder.sharedPackages(new String[]{"antlr", "org.antlr"});
         JavaExecHandleBuilder javaCommand = builder.getJavaCommand();
         javaCommand.setWorkingDir(workingDir);
         javaCommand.setMaxHeapSize(spec.getMaxHeapSize());

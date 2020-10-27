@@ -1,46 +1,17 @@
-// a small hack: the variable must be named like the property
-// jitpack will pass -Pversion=..., so `val version` is required here.
-val version: String by project
-// we create an alias here...
-val versionProperty = version
-// do the same for group
-val group: String by project
-val groupProperty = if (group.endsWith(".antlr-kotlin")) {
-    group
-} else {
-    // just another jitpack hack
-    "$group.antlr-kotlin"
-}
-
 //val antlrVersion = "4.7.1"
-val antlrKotlinVersion = versionProperty
+val antlrKotlinVersion = "0.0.6"
 // you can also use a jitpack version:
 //val antlrKotlinVersion = "86a86f1968"
 
 buildscript {
     // we have to re-declare this here :-(
-
-    // a small hack: the variable must be named like the property
-    // jitpack will pass -Pversion=..., so `val version` is required here.
-    val version: String by project
-    // we create an alias here...
-    val versionProperty = version
-    // do the same for group
-    val group: String by project
-    val groupProperty = if (group.endsWith(".antlr-kotlin")) {
-        group
-    } else {
-        // just another jitpack hack
-        "$group.antlr-kotlin"
-    }
-
-    val antlrKotlinVersion = versionProperty
+    val antlrKotlinVersion = "0.0.6"
     // you can also use a jitpack version (we have to re-declare this here):
     //val antlrKotlinVersion = "86a86f1968"
 
     dependencies {
         // add the plugin to the classpath
-        classpath("$groupProperty:antlr-kotlin-gradle-plugin:$antlrKotlinVersion")
+        classpath("com.strumenta.antlr-kotlin:antlr-kotlin-gradle-plugin:$antlrKotlinVersion")
     }
 }
 
@@ -49,12 +20,14 @@ repositories {
     mavenLocal()
     // used to download antlr4
     mavenCentral()
+    // used to download korio
+    jcenter()
     // used to download antlr-kotlin-runtime
     maven("https://jitpack.io")
 }
 
 plugins {
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.4.0"
     // do not add the plugin here, it contains only a task
     //id("com.strumenta.antlr-kotlin") version "0.0.5"
 }
@@ -70,7 +43,7 @@ tasks.register<com.strumenta.antlrkotlin.gradleplugin.AntlrKotlinTask>("generate
             // project.dependencies.create("org.antlr:antlr4:$antlrVersion"),
 
             // antlr target, required to create kotlin code
-            project.dependencies.create("$groupProperty:antlr-kotlin-target:$antlrKotlinVersion")
+            project.dependencies.create("com.strumenta.antlr-kotlin:antlr-kotlin-target:$antlrKotlinVersion")
     )
     maxHeapSize = "64m"
     packageName = "com.strumenta.antlrkotlin.examples"
@@ -82,9 +55,9 @@ tasks.register<com.strumenta.antlrkotlin.gradleplugin.AntlrKotlinTask>("generate
             }
     // outputDirectory is required, put it into the build directory
     // if you do not want to add the generated sources to version control
-    //outputDirectory = File("build/generated-src/antlr/main")
+    outputDirectory = File("build/generated-src/antlr/main")
     // use this settings if you want to add the generated sources to version control
-    outputDirectory = File("src/main/kotlin-antlr")
+    // outputDirectory = File("src/main/kotlin-antlr")
 }
 
 // run generate task before build
@@ -96,21 +69,17 @@ tasks.getByName("compileKotlin").dependsOn("generateKotlinGrammarSource")
 configure<SourceSetContainer> {
     named("main") {
         withConvention(org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet::class) {
-            // kotlin.srcDir("build/generated-src/antlr/main")
-            kotlin.srcDir("src/main/kotlin-antlr")
+            kotlin.srcDir("build/generated-src/antlr/main")
+            // kotlin.srcDir("src/main/kotlin-antlr")
         }
     }
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-    implementation(kotlin("reflect"))
+    compile(kotlin("stdlib-jdk8"))
+    compile(kotlin("reflect"))
     testImplementation(kotlin("test-junit5"))
     // add antlr-kotlin-runtime-jvm
     // otherwise, the generated sources will not compile
-    implementation("$groupProperty:antlr-kotlin-runtime-jvm:$antlrKotlinVersion")
+    compile("com.strumenta.antlr-kotlin:antlr-kotlin-runtime-jvm:$antlrKotlinVersion")
 }
-
-// to allow -x jsIrBrowserTest -x jsLegacyBrowserTest, see .ci.sh
-tasks.register("jsIrBrowserTest")
-tasks.register("jsLegacyBrowserTest")

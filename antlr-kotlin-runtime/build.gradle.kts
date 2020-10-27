@@ -11,7 +11,7 @@ apply(plugin = "maven-publish")
 
 kotlin {
     jvm()
-    js(BOTH) {
+    js {
         browser {
         }
         nodejs {
@@ -22,7 +22,8 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation(kotlin("reflect"))
-                implementation("com.benasher44:uuid:0.4.0")
+                api("com.soywiz.korlibs.korio:korio:1.12.0")
+                implementation("com.benasher44:uuid:0.1.0")
             }
         }
         commonTest {
