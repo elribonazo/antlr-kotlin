@@ -22,16 +22,15 @@ class StringCharStream(
         private val source: String,
         override val sourceName: String
 ) : CharStream {
-    private val codePointIndices = source.codePointIndices()
-    private val size = codePointIndices.size
+    private val size = source.length
     private var position: Int = 0
 
     private fun codePoint(index: Int): Int {
         return if (index in 0 until size) {
-            val char = source[codePointIndices[index]]
+            val char = source[index]
             if (char.isHighSurrogate()) {
                 if (index + 1 in 0 until size) {
-                    val low = source[codePointIndices[index] + 1]
+                    val low = source[index + 1]
                     toCodePoint(char, low)
                 } else {
                     IntStream.EOF
@@ -79,7 +78,7 @@ class StringCharStream(
     override fun getText(interval: Interval): String {
         val startIndex = Math.min(interval.a, size)
         val endIndex = Math.min(interval.b, size)
-        return source.substring(codePointIndices[startIndex], codePointIndices[endIndex] + 1)
+        return source.substring(startIndex, endIndex + 1)
     }
 
     override fun LA(i: Int): Int {
