@@ -17,33 +17,12 @@ kotlin {
         nodejs {
         }
     }
-
-    ios("ios") {
-        binaries {
-            staticLib()
-        }
-    }
-    linuxX64("linux") {
-        binaries {
-            staticLib()
-        }
-    }
-    macosX64("mac") {
-        binaries {
-            staticLib()
-        }
-    }
-    mingwX64("windows") {
-        binaries {
-            staticLib()
-        }
-    }
     sourceSets {
         commonMain {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation(kotlin("reflect"))
-                implementation("com.soywiz.korlibs.korio:korio:1.10.1")
+                api("com.soywiz.korlibs.korio:korio:1.12.0")
                 implementation("com.benasher44:uuid:0.1.0")
             }
         }
@@ -73,20 +52,6 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-js"))
             }
-        }
-        val nativeMain by creating {
-        }
-        val iosMain by getting {
-            dependsOn(nativeMain)
-        }
-        val linuxMain by getting {
-            dependsOn(nativeMain)
-        }
-        val macMain by getting {
-            dependsOn(nativeMain)
-        }
-        val windowsMain by getting {
-            dependsOn(nativeMain)
         }
     }
 }

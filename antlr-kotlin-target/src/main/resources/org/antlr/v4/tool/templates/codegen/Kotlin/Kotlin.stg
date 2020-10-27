@@ -299,7 +299,7 @@ class <parser.name>(input: TokenStream) : <superClass; null="Parser">(input) {
 <if(sempredFuncs)>
 	override fun sempred(_localctx: RuleContext?, ruleIndex: Int, predIndex: Int) : Boolean {
 		when (ruleIndex) {
-		<parser.sempredFuncs.values:{f| <f.ruleIndex> -> return <f.name>_sempred(_localctx as <f.ctxType>, predIndex)}; separator="\n">
+		<parser.sempredFuncs.values:{f| <f.ruleIndex> -> return <f.name>_sempred(_localctx as? <f.ctxType>, predIndex)}; separator="\n">
 		}
 		return true
 	}
@@ -330,7 +330,7 @@ fun action(RuleContext _localctx, int ruleIndex, int actionIndex) {
 override fun sempred(_localctx: RuleContext?, ruleIndex: Int, predIndex: Int) : Boolean {
 	when (ruleIndex) {
 	<recog.sempredFuncs.values:{f|
-<f.ruleIndex> -> return <f.name>_sempred(_localctx as <f.ctxType>, predIndex)}; separator="\n">
+<f.ruleIndex> -> return <f.name>_sempred(_localctx as? <f.ctxType>, predIndex)}; separator="\n">
 	}
 	return true
 }
@@ -360,7 +360,9 @@ private fun <r.name>_action(<r.ctxType> _localctx, int actionIndex) {
  * overriding implementation impossible to maintain.
  */
 RuleSempredFunction(r, actions) ::= <<
-private fun <r.name>_sempred( _localctx : <r.ctxType>, predIndex: Int) : Boolean {
+private fun <r.name>_sempred( _localctx : <r.ctxType>?, predIndex: Int) : Boolean {
+	if(_localctx==null)
+	    return false
 	when (predIndex) {
 	<actions:{index|
     <index> -> return <actions.(index)>}; separator="\n">
@@ -786,7 +788,7 @@ override fun \<T> accept(visitor : ParseTreeVisitor\<out T>) : T {
 }
 >>
 
-AttributeDecl(d) ::= "val <d.name> <if(d.type)>: <d.type><endif><if(d.initValue)> = <d.initValue><endif>"
+AttributeDecl(d) ::= "var <d.name> <if(d.type)>: <d.type><endif><if(d.initValue)> = <d.initValue><endif>"
 
 /** If we don't know location of label def x, use this template */
 labelref(x) ::= "<if(!x.isLocal)>(_localctx as <x.ctx.name>).<endif><x.name>"
