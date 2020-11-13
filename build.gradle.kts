@@ -1,5 +1,5 @@
 buildscript {
-    val kotlinVersion = "1.4.0"
+    val kotlinVersion = "1.4.10"
 
     repositories {
         mavenLocal()
