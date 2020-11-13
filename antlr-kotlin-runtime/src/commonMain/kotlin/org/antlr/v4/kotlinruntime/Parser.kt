@@ -368,7 +368,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
      * `ttype` and the error strategy could not recover from the
      * mismatched symbol
      */
-    fun match(ttype: Int): Token {
+    open fun match(ttype: Int): Token {
         var t = currentToken
         if (t!!.type == ttype) {
             if (ttype == Token.EOF) {
@@ -406,7 +406,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
      * a wildcard and the error strategy could not recover from the mismatched
      * symbol
      */
-    fun matchWildcard(): Token {
+    open fun matchWildcard(): Token {
         var t = currentToken
         if (t!!.type > 0) {
             errorHandler.reportMatch(this)
@@ -453,7 +453,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
      * @param listener the listener to add
      *
      */
-    fun addParseListener(listener: ParseTreeListener) {
+    open fun addParseListener(listener: ParseTreeListener) {
         _parseListeners.add(listener)
     }
 
@@ -469,7 +469,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
      *
      * @param listener the listener to remove
      */
-    fun removeParseListener(listener: ParseTreeListener) {
+    open fun removeParseListener(listener: ParseTreeListener) {
         _parseListeners.remove(listener)
     }
 
@@ -478,7 +478,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
      *
      * @see .addParseListener
      */
-    fun removeParseListeners() {
+    open fun removeParseListeners() {
         _parseListeners.clear()
     }
 
@@ -545,12 +545,12 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
 //        tokenStream = input as TokenStream
 //    }
 //
-    fun notifyErrorListeners(msg: String) {
+    open fun notifyErrorListeners(msg: String) {
         require(currentToken != null)
         notifyErrorListeners(currentToken!!, msg, null)
     }
 
-    fun notifyErrorListeners(
+    open fun notifyErrorListeners(
             offendingToken: Token, msg: String,
             e: RecognitionException?
     ) {
@@ -587,7 +587,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
 //     * [ParseTreeListener.visitErrorNode] is called on any parse
 //     * listeners.
 //     */
-    fun consume(): Token {
+    open fun consume(): Token {
         val o = currentToken
         require(o != null, { "current token must not be null when consuming" })
         if (o!!.type != Recognizer.EOF) {
@@ -616,7 +616,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
      *
      * @since 4.7
      */
-    fun createTerminalNode(parent: ParserRuleContext?, t: Token): TerminalNode {
+    open fun createTerminalNode(parent: ParserRuleContext?, t: Token): TerminalNode {
         return TerminalNodeImpl(t)
     }
 
@@ -625,7 +625,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
      *
      * @since 4.7
      */
-    fun createErrorNode(parent: ParserRuleContext?, t: Token): ErrorNode {
+    open fun createErrorNode(parent: ParserRuleContext?, t: Token): ErrorNode {
         return ErrorNodeImpl(t)
     }
 
@@ -641,7 +641,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
      * Always called by generated parsers upon entry to a rule. Access field
      * [._ctx] get the current context.
      */
-    fun enterRule(localctx: ParserRuleContext, state: Int, ruleIndex: Int) {
+    open fun enterRule(localctx: ParserRuleContext, state: Int, ruleIndex: Int) {
         this.state = state
         context = localctx
         context!!.start = _input!!.LT(1)
@@ -649,7 +649,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
         triggerEnterRuleEvent()
     }
 
-    fun exitRule() {
+    open fun exitRule() {
         if (isMatchedEOF) {
             // if we have matched EOF, it cannot consume past EOF so we use LT(1) here
             context!!.stop = _input!!.LT(1) // LT(1) will be end of file
@@ -663,7 +663,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
     }
 
     //
-    fun enterOuterAlt(localctx: ParserRuleContext, altNum: Int) {
+    open fun enterOuterAlt(localctx: ParserRuleContext, altNum: Int) {
         localctx.altNumber = altNum
         // if we have new localctx, make sure we replace existing ctx
         // that is previous child of parse tree
@@ -679,7 +679,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
 
 
     @Deprecated("Use {@link #enterRecursionRule(ParserRuleContext, int, int, int)} instead.")
-    fun enterRecursionRule(localctx: ParserRuleContext, ruleIndex: Int) {
+    open fun enterRecursionRule(localctx: ParserRuleContext, ruleIndex: Int) {
         enterRecursionRule(localctx, atn.ruleToStartState!![ruleIndex]!!.stateNumber, ruleIndex, 0)
     }
 
@@ -694,7 +694,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
     /** Like [.enterRule] but for recursive rules.
      * Make the current context the child of the incoming localctx.
      */
-    fun pushNewRecursionContext(localctx: ParserRuleContext, state: Int, ruleIndex: Int) {
+    open fun pushNewRecursionContext(localctx: ParserRuleContext, state: Int, ruleIndex: Int) {
         val previous = context
         previous!!.assignParent(localctx)
         previous!!.invokingState = state
@@ -710,7 +710,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
 
     }
 
-    fun unrollRecursionContexts(_parentctx: ParserRuleContext?) {
+    open fun unrollRecursionContexts(_parentctx: ParserRuleContext?) {
         _precedenceStack.pop()
         context!!.stop = _input!!.LT(-1)
         val retctx = context // save current ctx (return value)
@@ -799,11 +799,11 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
     }
 
     //
-    fun getRuleContext(): ParserRuleContext? {
+    open fun getRuleContext(): ParserRuleContext? {
         return context
     }
 
-    fun getRuleInvocationStack(p: RuleContext?): List<String> {
+    open fun getRuleInvocationStack(p: RuleContext?): List<String> {
         var p = p
         val ruleNames = ruleNames
         val stack = ArrayList<String>()
