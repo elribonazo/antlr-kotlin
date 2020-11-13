@@ -240,7 +240,6 @@ class <parser.name>(input: TokenStream) : <superClass; null="Parser">(input) {
         override val classesByName : List\<KClass\<*>\> = listOf(<parser.funcs:{f | <parser.name>.<f.name; format="cap">Context::class}; separator=",\n", wrap, anchor>)
     }
 
-	// TODO verify version of runtime is compatible
 
     override val grammarFileName: String
         get() = "<parser.grammarFileName>"
@@ -857,7 +856,6 @@ import org.antlr.v4.kotlinruntime.dfa.DFA
 
 Lexer(lexer, atn, actionFuncs, sempredFuncs, superClass) ::= <<
 class <lexer.name>(val input: CharStream) : <superClass; null="Lexer">(input) {
-	// TODO Verify the runtime version is correct
 
     override val ruleNames: Array\<String>?
         get() = Rules.values().map { it.name }.toTypedArray()
