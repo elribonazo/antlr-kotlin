@@ -32,7 +32,7 @@ abstract class Lexer : Recognizer<Int, LexerATNSimulator>, TokenSource {
         assignInputStream(newValue as CharStream?)
     }
 
-    fun assignInputStream(input: CharStream?) {
+    open fun assignInputStream(input: CharStream?) {
         this.inputStream = null
         this._tokenFactorySourcePair = Pair<TokenSource, CharStream?>(this, null)
         reset()
@@ -160,7 +160,7 @@ abstract class Lexer : Recognizer<Int, LexerATNSimulator>, TokenSource {
         this._tokenFactorySourcePair = Pair<TokenSource, CharStream>(this, input)
     }
 
-    fun reset() {
+    open fun reset() {
         // wack Lexer state variables
         if (inputStream != null) {
             inputStream!!.seek(0) // rewind the input
@@ -242,25 +242,25 @@ abstract class Lexer : Recognizer<Int, LexerATNSimulator>, TokenSource {
      * if token==null at end of any token rule, it creates one for you
      * and emits it.
      */
-    fun skip() {
+    open fun skip() {
         type = SKIP
     }
 
-    fun more() {
+    open fun more() {
         type = MORE
     }
 
-    fun mode(m: Int) {
+    open fun mode(m: Int) {
         _mode = m
     }
 
-    fun pushMode(m: Int) {
+    open fun pushMode(m: Int) {
         if (LexerATNSimulator.debug) println("pushMode " + m)
         _modeStack.push(_mode)
         mode(m)
     }
 
-    fun popMode(): Int {
+    open fun popMode(): Int {
         if (_modeStack.isEmpty) throw RuntimeException()
         if (LexerATNSimulator.debug) outMessage("popMode back to " + _modeStack.peek())
         mode(_modeStack.pop())
@@ -273,7 +273,7 @@ abstract class Lexer : Recognizer<Int, LexerATNSimulator>, TokenSource {
      * and getToken (to push tokens into a list and pull from that list
      * rather than a single variable as this implementation does).
      */
-    fun emit(token: Token) {
+    open fun emit(token: Token) {
         //System.err.println("emit "+token);
         this.token = token
     }
@@ -284,14 +284,14 @@ abstract class Lexer : Recognizer<Int, LexerATNSimulator>, TokenSource {
      * use that to set the token's text.  Override this method to emit
      * custom Token objects or provide a new factory.
      */
-    fun emit(): Token {
+    open fun emit(): Token {
         val t = tokenFactory.create(_tokenFactorySourcePair!!, type, _text, channel, _tokenStartCharIndex, charIndex - 1,
                 _tokenStartLine, _tokenStartCharPositionInLine)
         emit(t)
         return t
     }
 
-    fun emitEOF(): Token {
+    open fun emitEOF(): Token {
         val cpos = charPositionInLine
         val line = line
         val eof = tokenFactory.create(_tokenFactorySourcePair!!, Token.EOF, null, Token.DEFAULT_CHANNEL, inputStream!!.index(), inputStream!!.index() - 1,
@@ -300,14 +300,14 @@ abstract class Lexer : Recognizer<Int, LexerATNSimulator>, TokenSource {
         return eof
     }
 
-    fun recover(e: LexerNoViableAltException) {
+    open fun recover(e: LexerNoViableAltException) {
         if (inputStream!!.LA(1) != IntStream.EOF) {
             // skip a char and try again
             interpreter!!.consume(readInputStream()!!)
         }
     }
 
-    fun notifyListeners(e: LexerNoViableAltException) {
+    open fun notifyListeners(e: LexerNoViableAltException) {
         val text = readInputStream()!!.getText(Interval.of(_tokenStartCharIndex, inputStream!!.index()))
         val msg = "token recognition error at: '" + getErrorDisplay(text) + "'"
 
@@ -315,7 +315,7 @@ abstract class Lexer : Recognizer<Int, LexerATNSimulator>, TokenSource {
         listener.syntaxError(this, null, _tokenStartLine, _tokenStartCharPositionInLine, msg, e)
     }
 
-    fun getErrorDisplay(s: String): String {
+    open fun getErrorDisplay(s: String): String {
         val buf = StringBuilder()
         for (c in s.asCharArray()) {
             buf.append(getErrorDisplay(c.toInt()))
@@ -323,7 +323,7 @@ abstract class Lexer : Recognizer<Int, LexerATNSimulator>, TokenSource {
         return buf.toString()
     }
 
-    fun getErrorDisplay(c: Int): String {
+    open fun getErrorDisplay(c: Int): String {
         var s = c.toChar().toString()
         when (c) {
             Token.EOF -> s = "<EOF>"
@@ -334,7 +334,7 @@ abstract class Lexer : Recognizer<Int, LexerATNSimulator>, TokenSource {
         return s
     }
 
-    fun getCharErrorDisplay(c: Int): String {
+    open fun getCharErrorDisplay(c: Int): String {
         val s = getErrorDisplay(c)
         return "'$s'"
     }
@@ -344,7 +344,7 @@ abstract class Lexer : Recognizer<Int, LexerATNSimulator>, TokenSource {
      * it all works out.  You can instead use the rule invocation stack
      * to do sophisticated error recovery if you are in a fragment rule.
      */
-    fun recover(re: RecognitionException) {
+    open fun recover(re: RecognitionException) {
         //System.out.println("consuming char "+(char)input.LA(1)+" during recovery");
         //re.printStackTrace();
         // TODO: Do we lose character or line position information?
