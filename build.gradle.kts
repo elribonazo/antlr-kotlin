@@ -9,8 +9,13 @@ buildscript {
 
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.6.10")
+        classpath("io.github.gradle-nexus:publish-plugin:1.0.0")
     }
 }
+
+
+apply(plugin = "io.github.gradle-nexus.publish-plugin")
 
 // a small hack: the variable must be named like the property
 // jitpack will pass -Pversion=..., so `val version` is required here.
@@ -27,6 +32,9 @@ val groupProperty = if (group.endsWith(".antlr-kotlin")) {
 }
 
 allprojects {
+    apply(plugin = "org.jetbrains.dokka")
+    apply(plugin = "maven-publish")
+    apply(plugin = "signing")
     // ... because `version` is another var here.
     // when version is hardcoded here, jitpack can not overwrite it.
     // the default version can now be changed in gradle.properties
@@ -44,56 +52,66 @@ allprojects {
         mavenCentral()
         mavenLocal()
     }
-    //TODO: get rid of bintray stuff
     if (name.contains("runtime|plugin|target".toRegex())) {
-        //TODO bintray upload currently doesn't support gradle metadata uploads (.module files) for now just use maven-publish
-//        apply(plugin = "com.jfrog.bintray")
-//        //run bintrayUpload or bintrayPublish from command line rather than
-////intellij since intellij's process is ignorant of the system env variables
-//        configure<com.jfrog.bintray.gradle.BintrayExtension> {
-//            user = System.getenv("BINTRAY_USER")
-//            key = System.getenv("BINTRAY_KEY")
-//            if (name.contains("runtime"))
-//                setPublications("jvm", "js", "metadata", "kotlinMultiplatform")
-//            else
-//                setPublications("mavenJava")
-//            publish = true
-//            override = true
-//            pkg.apply {
-//                repo = "piacenti-tools"
-//                name = "antlr-kotlin"
-//                setLicenses("Apache-2.0")
-//                vcsUrl = "https://github.com/piacenti/antlr-kotlin.git"
-//                version.apply {
-//                    name = versionProperty
-//                }
-//            }
-//        }
-        afterEvaluate {
-            val repositories = (extensions.findByName("publishing") as? PublishingExtension)?.repositories
-            repositories
-                    ?.maven {
-                        name = "bintray"
-                        url = uri("https://api.bintray.com/maven/piacenti/piacenti-tools/antlr-kotlin/;publish=1;override=1")
-                        credentials {
-                            username = System.getenv("BINTRAY_USER")
-                            password = System.getenv("BINTRAY_KEY")
+        val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)
+        val javadocJar: TaskProvider<Jar> by tasks.registering(Jar::class) {
+            dependsOn(dokkaHtml)
+            archiveClassifier.set("javadoc")
+            from(dokkaHtml.outputDirectory)
+        }
+        configure<PublishingExtension> {
+            publications.withType<MavenPublication> {
+                artifact(javadocJar)
+                pom {
+                    name.set(groupProperty + ":" + project.name)
+                    // optionally artifactId can be defined here
+                    description.set("Kotlin multiplatform port of ANTLR")
+                    url.set("https://github.com/piacenti/antlr-kotlin")
+
+                    scm {
+                        connection.set("scm:git:git://github.com/piacenti/antlr-kotlin.git")
+                        developerConnection.set("scm:git:ssh://github.com/piacenti/antlr-kotlin.git")
+                        url.set("https://github.com/piacenti/antlr-kotlin/tree/main")
+                    }
+
+                    licenses {
+                        license {
+                            name.set("The Apache License, Version 2.0")
+                            url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
                         }
                     }
+
+                    developers {
+                        developer {
+                            name.set("Gabriel Piacenti")
+                            email.set("piacenti10@gmail.com")
+                        }
+                    }
+                }
+                the<SigningExtension>().sign(this)
+            }
+
         }
     }
-
-//    afterEvaluate {
-//
-//        println(">>")
-//        project.extensions.wi.withType(MavenPublication::class.java) {
-//            println(name)
-//            name = name
-//
-//        }
-//    }
+    configure<SigningExtension> {
+        val signingKey = System.getenv("signingKey")
+        val signingPassword = System.getenv("signingPassword")
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
 }
 
+
+
+configure<io.github.gradlenexus.publishplugin.NexusPublishExtension> {
+    repositories {
+        sonatype {
+            username.set(System.getenv("ossrhTokenId"))
+            password.set(System.getenv("ossrhPTokenValue"))
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        }
+    }
+}
 tasks.withType<Wrapper> {
     gradleVersion = "7.3.3"
     distributionType = Wrapper.DistributionType.ALL
