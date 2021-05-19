@@ -22,7 +22,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation(kotlin("reflect"))
-                implementation("com.soywiz.korlibs.korio:korio:1.12.0")
+                implementation("com.soywiz.korlibs.korio:korio:2.0.10")
                 implementation("com.benasher44:uuid:0.1.0")
             }
         }
