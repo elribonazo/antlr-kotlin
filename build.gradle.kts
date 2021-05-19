@@ -1,10 +1,9 @@
 buildscript {
-    val kotlinVersion = "1.4.10"
+    val kotlinVersion = "1.5.0"
 
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
         maven("https://plugins.gradle.org/m2/")
     }
 
@@ -48,7 +47,6 @@ allprojects {
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
     }
     if (name.contains("runtime|plugin|target".toRegex())) {
         val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)

@@ -20,14 +20,12 @@ repositories {
     mavenLocal()
     // used to download antlr4
     mavenCentral()
-    // used to download korio
-    jcenter()
     // used to download antlr-kotlin-runtime
     maven("https://jitpack.io")
 }
 
 plugins {
-    kotlin("multiplatform") version "1.4.10"
+    kotlin("multiplatform") version "1.5.0"
     // do not add the plugin here, it contains only a task
     //id("com.strumenta.antlr-kotlin") version "0.0.5"
 }
