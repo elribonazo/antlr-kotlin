@@ -17,7 +17,7 @@ The project should be considered experimental. Several parsers have been impleme
 
 ## Using ANTLR-Kotlin with Gradle
 
-ANTLR-Kotlin is accessible on Maven & Gradle through Jitpack. In jitpack basically you can use every commit or tag as a version number. You can find recent versions on the [Jitpack page for ANTLR-Kotlin](https://jitpack.io/#com.strumenta/antlr-kotlin).
+ANTLR-Kotlin is accessible on Maven & Gradle through maven central.
 
 In older versions of this Plugin (antlr-kotlin-plugin <0.0.5), the configuration was applied by the plugin.
 Starting from version 0.0.5, you have to apply the configuration manually:
@@ -36,3 +36,5 @@ This project contains the runtime for the Kotlin target of ANTLR. This runtime i
 running on the JVM, JS, and Kotlin/Native platforms.
 
 You will need to use ANTLR 4 and the Kotlin target to generate ANTLR Lexers and Parsers in Kotlin. 
+
+**public key for validating dependency available from keyserver.ubuntu.com under**
