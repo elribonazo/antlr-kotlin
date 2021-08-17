@@ -1,16 +1,16 @@
 buildscript {
-    val kotlinVersion = "1.5.0"
+    val kotlinVersion = "1.5.21"
 
     repositories {
-        mavenLocal()
         mavenCentral()
         maven("https://plugins.gradle.org/m2/")
+        mavenLocal()
     }
 
     dependencies {
         classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.4.20")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.4.32")
         classpath("io.github.gradle-nexus:publish-plugin:1.0.0")
     }
 }
