@@ -32,7 +32,7 @@ import org.antlr.v4.kotlinruntime.misc.Interval
  *
  * @author Sam Harwell
  */
-class DiagnosticErrorListener
+open class DiagnosticErrorListener
 /**
  * Initializes a new instance of [DiagnosticErrorListener], specifying
  * whether all ambiguities or only exact ambiguities are reported.
