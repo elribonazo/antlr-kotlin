@@ -11,7 +11,7 @@ import com.strumenta.kotlinmultiplatform.errMessage
  *
  * @author Sam Harwell
  */
-class ConsoleErrorListener : BaseErrorListener() {
+open class ConsoleErrorListener : BaseErrorListener() {
 
     /**
      * {@inheritDoc}

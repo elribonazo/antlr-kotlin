@@ -38,7 +38,7 @@ import org.antlr.v4.kotlinruntime.misc.ParseCancellationException
  *
  * @see Parser.setErrorHandler
  */
-class BailErrorStrategy : DefaultErrorStrategy() {
+open class BailErrorStrategy : DefaultErrorStrategy() {
     /** Instead of recovering from exception `e`, re-throw it wrapped
      * in a [ParseCancellationException] so it is not caught by the
      * rule function catches.  Use [Exception.getCause] to get the

@@ -12,7 +12,7 @@ import org.antlr.v4.kotlinruntime.misc.Interval
  * This default implementation of [TokenFactory] creates
  * [CommonToken] objects.
  */
-class CommonTokenFactory
+open class CommonTokenFactory
 /**
  * Constructs a [CommonTokenFactory] with the specified value for
  * [.copyText].
