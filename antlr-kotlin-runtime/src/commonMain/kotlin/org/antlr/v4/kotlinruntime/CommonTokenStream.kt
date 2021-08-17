@@ -33,7 +33,7 @@ package org.antlr.v4.kotlinruntime
  * such a rule will not be available as part of the token stream, regardless of
  * channel.we
  */
-class CommonTokenStream
+open class CommonTokenStream
 /**
  * Constructs a new [CommonTokenStream] using the specified token
  * source and the default token channel ([Token.DEFAULT_CHANNEL]).
