@@ -5,6 +5,7 @@ val version: String by project
 val versionProperty = version
 // do the same for group
 val group: String by project
+
 val groupProperty = if (group.endsWith(".antlr-kotlin")) {
     group
 } else {
@@ -45,12 +46,10 @@ buildscript {
 }
 
 repositories {
-    // used for local development and while building by travis ci and jitpack.io
-    mavenLocal()
     // used to download antlr4
     mavenCentral()
-    // used to download antlr-kotlin-runtime
-    maven("https://jitpack.io")
+    // used for local development and while building by travis ci and jitpack.io
+    mavenLocal()
 }
 
 plugins {
