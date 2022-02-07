@@ -94,8 +94,8 @@ allprojects {
         }
     }
     configure<SigningExtension> {
-        val signingKey = System.getenv("signingKey")
-        val signingPassword = System.getenv("signingPassword")
+        val signingKey = System.getenv("SIGNING_KEY")
+        val signingPassword = System.getenv("SIGNING_PASSWORD")
         useInMemoryPgpKeys(signingKey, signingPassword)
     }
 }
@@ -105,8 +105,8 @@ allprojects {
 configure<io.github.gradlenexus.publishplugin.NexusPublishExtension> {
     repositories {
         sonatype {
-            username.set(System.getenv("ossrhTokenId"))
-            password.set(System.getenv("ossrhPTokenValue"))
+            username.set(System.getenv("OSSR_TOKEN_ID"))
+            password.set(System.getenv("OSSR_TOKEN_VALUE"))
             nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
             snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
         }
@@ -115,4 +115,11 @@ configure<io.github.gradlenexus.publishplugin.NexusPublishExtension> {
 tasks.withType<Wrapper> {
     gradleVersion = "7.3.3"
     distributionType = Wrapper.DistributionType.ALL
+}
+tasks.register("publishToCentral"){
+    group = "publishing"
+    description = "Publish to Maven Central"
+    afterEvaluate {
+        dependsOn("publishAllPublicationsToSonatypeRepository","closeAndReleaseSonatypeStagingRepository")
+    }
 }
