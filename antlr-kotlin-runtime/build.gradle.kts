@@ -22,7 +22,7 @@ kotlin {
             dependencies {
                 implementation(kotlin("stdlib-common"))
                 implementation(kotlin("reflect"))
-                implementation("com.benasher44:uuid:0.2.2")
+                implementation("com.benasher44:uuid:0.4.0")
             }
         }
         commonTest {
