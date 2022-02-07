@@ -32,7 +32,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
-public class AntlrExecuter implements RequestHandler<AntlrSpec,AntlrResult> {
+public class AntlrExecuter implements RequestHandler<AntlrSpec, AntlrResult> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AntlrExecuter.class);
 
@@ -210,7 +210,6 @@ public class AntlrExecuter implements RequestHandler<AntlrSpec,AntlrResult> {
                 throw UncheckedException.throwAsUncheckedException(e);
             }
         }
-
     }
 
 

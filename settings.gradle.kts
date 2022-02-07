@@ -5,4 +5,3 @@ include(
         "antlr-kotlin-target",
         "antlr-kotlin-gradle-plugin"
 )
-
