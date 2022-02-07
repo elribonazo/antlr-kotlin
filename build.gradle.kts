@@ -119,7 +119,5 @@ tasks.withType<Wrapper> {
 tasks.register("publishToCentral"){
     group = "publishing"
     description = "Publish to Maven Central"
-    afterEvaluate {
-        dependsOn("publishAllPublicationsToSonatypeRepository","closeAndReleaseSonatypeStagingRepository")
-    }
+    dependsOn("publishAllPublicationsToSonatypeRepository","closeAndReleaseSonatypeStagingRepository")
 }
