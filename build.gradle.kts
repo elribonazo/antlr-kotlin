@@ -116,8 +116,10 @@ tasks.withType<Wrapper> {
     gradleVersion = "7.3.3"
     distributionType = Wrapper.DistributionType.ALL
 }
-tasks.register("publishToCentral"){
-    group = "publishing"
-    description = "Publish to Maven Central"
-    dependsOn("publishAllPublicationsToSonatypeRepository","closeAndReleaseSonatypeStagingRepository")
+afterEvaluate {
+    tasks.register("publishToCentral") {
+        group = "publishing"
+        description = "Publish to Maven Central"
+        finalizedBy("publishAllPublicationsToSonatypublishAllPublicationsToSonatypeRepositorypeRepository", "closeAndReleaseSonatypeStagingRepository")
+    }
 }
