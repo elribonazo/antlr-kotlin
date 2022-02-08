@@ -120,6 +120,7 @@ afterEvaluate {
     tasks.register("publishToCentral") {
         group = "publishing"
         description = "Publish to Maven Central"
-        finalizedBy("publishAllPublicationsToSonatypublishAllPublicationsToSonatypeRepositorypeRepository", "closeAndReleaseSonatypeStagingRepository")
+        dependsOn("publishAllPublicationsToSonatypeRepository", "closeAndReleaseSonatypeStagingRepository")
     }
+    tasks.named("closeAndReleaseSonatypeStagingRepository").get().mustRunAfter("publishAllPublicationsToSonatypeRepository")
 }
