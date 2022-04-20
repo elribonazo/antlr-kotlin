@@ -24,12 +24,7 @@ val version: String by project
 val versionProperty = version
 // do the same for group
 val group: String by project
-val groupProperty = if (group.endsWith(".antlr-kotlin")) {
-    group
-} else {
-    // just another jitpack hack
-    "$group.antlr-kotlin"
-}
+val groupProperty = group
 
 allprojects {
     apply(plugin = "org.jetbrains.dokka")
@@ -122,6 +117,9 @@ afterEvaluate {
         group = "publishing"
         description = "Publish to Maven Central"
         dependsOn("publishAllPublicationsToSonatypeRepository", "closeAndReleaseSonatypeStagingRepository")
+    }
+    tasks.named("publishAllPublicationsToSonatypeRepository"){
+    outputs.upToDateWhen { false }
     }
     tasks.named("closeAndReleaseSonatypeStagingRepository").get().mustRunAfter("publishAllPublicationsToSonatypeRepository")
     tasks.withType(Jar::class).forEach {
