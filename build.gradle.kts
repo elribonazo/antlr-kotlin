@@ -1,5 +1,5 @@
 buildscript {
-    val kotlinVersion = "1.6.10"
+    val kotlinVersion = "1.6.21"
 
     repositories {
         mavenCentral()
@@ -58,6 +58,9 @@ allprojects {
             dependsOn(dokkaHtml)
             archiveClassifier.set("javadoc")
             from(dokkaHtml.outputDirectory)
+        }
+        tasks.named("publishAllPublicationsToSonatypeRepository"){
+            dependsOn(javadocJar)
         }
         configure<PublishingExtension> {
             publications.withType<MavenPublication> {
