@@ -59,11 +59,7 @@ allprojects {
             archiveClassifier.set("javadoc")
             from(dokkaHtml.outputDirectory)
         }
-        afterEvaluate{
-            tasks.named("publishAllPublicationsToSonatypeRepository"){
-                dependsOn(javadocJar)
-            }
-        }
+
         configure<PublishingExtension> {
             publications.withType<MavenPublication> {
                 artifact(javadocJar)
@@ -128,4 +124,7 @@ afterEvaluate {
         dependsOn("publishAllPublicationsToSonatypeRepository", "closeAndReleaseSonatypeStagingRepository")
     }
     tasks.named("closeAndReleaseSonatypeStagingRepository").get().mustRunAfter("publishAllPublicationsToSonatypeRepository")
+    tasks.withType(Jar::class).forEach {
+        tasks.named("publishAllPublicationsToSonatypeRepository").get().dependsOn(it)
+    }
 }
