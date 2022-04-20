@@ -117,15 +117,14 @@ tasks.withType<Wrapper> {
     gradleVersion = "7.3.3"
     distributionType = Wrapper.DistributionType.ALL
 }
-// somehow this doesn't work simply calling individual tasks from github actions
-//afterEvaluate {
-//    tasks.register("publishToCentral") {
-//        group = "publishing"
-//        description = "Publish to Maven Central"
-//        dependsOn("publishAllPublicationsToSonatypeRepository", "closeAndReleaseSonatypeStagingRepository")
-//    }
-//    tasks.named("closeAndReleaseSonatypeStagingRepository").get().mustRunAfter("publishAllPublicationsToSonatypeRepository")
-//    tasks.withType(Jar::class).forEach {
-//        tasks.named("publishAllPublicationsToSonatypeRepository").get().dependsOn(it)
-//    }
-//}
+afterEvaluate {
+    tasks.register("publishToCentral") {
+        group = "publishing"
+        description = "Publish to Maven Central"
+        dependsOn("publishAllPublicationsToSonatypeRepository", "closeAndReleaseSonatypeStagingRepository")
+    }
+    tasks.named("closeAndReleaseSonatypeStagingRepository").get().mustRunAfter("publishAllPublicationsToSonatypeRepository")
+    tasks.withType(Jar::class).forEach {
+        tasks.named("publishAllPublicationsToSonatypeRepository").get().dependsOn(it)
+    }
+}
