@@ -59,8 +59,10 @@ allprojects {
             archiveClassifier.set("javadoc")
             from(dokkaHtml.outputDirectory)
         }
-        tasks.named("publishAllPublicationsToSonatypeRepository"){
-            dependsOn(javadocJar)
+        afterEvaluate{
+            tasks.named("publishAllPublicationsToSonatypeRepository"){
+                dependsOn(javadocJar)
+            }
         }
         configure<PublishingExtension> {
             publications.withType<MavenPublication> {
