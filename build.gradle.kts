@@ -112,17 +112,18 @@ tasks.withType<Wrapper> {
     gradleVersion = "7.3.3"
     distributionType = Wrapper.DistributionType.ALL
 }
-afterEvaluate {
-    tasks.register("publishToCentral") {
-        group = "publishing"
-        description = "Publish to Maven Central"
-        dependsOn("publishAllPublicationsToSonatypeRepository", "closeAndReleaseSonatypeStagingRepository")
-    }
-    tasks.named("publishAllPublicationsToSonatypeRepository"){
-    outputs.upToDateWhen { false }
-    }
-    tasks.named("closeAndReleaseSonatypeStagingRepository").get().mustRunAfter("publishAllPublicationsToSonatypeRepository")
-    tasks.withType(Jar::class).forEach {
-        tasks.named("publishAllPublicationsToSonatypeRepository").get().dependsOn(it)
-    }
-}
+// not working for some reason
+//afterEvaluate {
+//    tasks.register("publishToCentral") {
+//        group = "publishing"
+//        description = "Publish to Maven Central"
+//        dependsOn("publishAllPublicationsToSonatypeRepository", "closeAndReleaseSonatypeStagingRepository")
+//    }
+//    tasks.named("publishAllPublicationsToSonatypeRepository"){
+//    outputs.upToDateWhen { false }
+//    }
+//    tasks.named("closeAndReleaseSonatypeStagingRepository").get().mustRunAfter("publishAllPublicationsToSonatypeRepository")
+//    tasks.withType(Jar::class).forEach {
+//        tasks.named("publishAllPublicationsToSonatypeRepository").get().dependsOn(it)
+//    }
+//}
