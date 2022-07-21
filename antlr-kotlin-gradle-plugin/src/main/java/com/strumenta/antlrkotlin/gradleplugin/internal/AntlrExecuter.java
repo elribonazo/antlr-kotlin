@@ -143,7 +143,7 @@ public class AntlrExecuter implements RequestHandler<AntlrSpec,AntlrResult> {
                 writeableField(backedObject.getClass(), "inputDirectory").setValue(backedObject, inputDirectory);
             }
             JavaMethod.of(backedObject, Void.class, "processGrammarsOnCommandLine").invoke(backedObject);
-            return (int) JavaMethod.of(backedObject, Integer.class, "getNumErrors").invoke(backedObject);
+            return JavaMethod.of(backedObject, Integer.class, "getNumErrors").invoke(backedObject);
         }
 
         @Override
