@@ -1,5 +1,5 @@
 buildscript {
-    val kotlinVersion = "1.5.21"
+    val kotlinVersion = "1.6.21"
 
     repositories {
         mavenCentral()
@@ -8,12 +8,12 @@ buildscript {
     }
 
     dependencies {
-        classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.4")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.4.32")
-        classpath("io.github.gradle-nexus:publish-plugin:1.0.0")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:1.6.10")
+        classpath("io.github.gradle-nexus:publish-plugin:1.1.0")
     }
 }
+
 
 apply(plugin = "io.github.gradle-nexus.publish-plugin")
 
@@ -25,7 +25,6 @@ val versionProperty = version
 // do the same for group
 val group: String by project
 val groupProperty = group
-
 
 allprojects {
     apply(plugin = "org.jetbrains.dokka")
@@ -45,8 +44,8 @@ allprojects {
     }
 
     repositories {
-        mavenLocal()
         mavenCentral()
+        mavenLocal()
     }
     if (name.contains("runtime|plugin|target".toRegex())) {
         val dokkaHtml by tasks.getting(org.jetbrains.dokka.gradle.DokkaTask::class)
@@ -55,6 +54,7 @@ allprojects {
             archiveClassifier.set("javadoc")
             from(dokkaHtml.outputDirectory)
         }
+
         configure<PublishingExtension> {
             publications.withType<MavenPublication> {
                 artifact(javadocJar)
@@ -109,14 +109,21 @@ configure<io.github.gradlenexus.publishplugin.NexusPublishExtension> {
     }
 }
 tasks.withType<Wrapper> {
-    gradleVersion = "6.6.1"
+    gradleVersion = "7.3.3"
     distributionType = Wrapper.DistributionType.ALL
 }
-tasks.register("publishToCentral"){
-    group = "publishing"
-    description = "Publish to Maven Central"
-    afterEvaluate {
-        dependsOn("publishAllPublicationsToSonatypeRepository","closeAndReleaseSonatypeStagingRepository")
-    }
-}
-
+// not working for some reason
+//afterEvaluate {
+//    tasks.register("publishToCentral") {
+//        group = "publishing"
+//        description = "Publish to Maven Central"
+//        dependsOn("publishAllPublicationsToSonatypeRepository", "closeAndReleaseSonatypeStagingRepository")
+//    }
+//    tasks.named("publishAllPublicationsToSonatypeRepository"){
+//    outputs.upToDateWhen { false }
+//    }
+//    tasks.named("closeAndReleaseSonatypeStagingRepository").get().mustRunAfter("publishAllPublicationsToSonatypeRepository")
+//    tasks.withType(Jar::class).forEach {
+//        tasks.named("publishAllPublicationsToSonatypeRepository").get().dependsOn(it)
+//    }
+//}

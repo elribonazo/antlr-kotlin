@@ -6,12 +6,7 @@ val versionProperty = version
 // do the same for group
 val group: String by project
 
-val groupProperty = if (group.endsWith(".antlr-kotlin")) {
-    group
-} else {
-    // just another jitpack hack
-    "$group.antlr-kotlin"
-}
+val groupProperty = group
 
 //val antlrVersion = "4.7.1"
 val antlrKotlinVersion = versionProperty
