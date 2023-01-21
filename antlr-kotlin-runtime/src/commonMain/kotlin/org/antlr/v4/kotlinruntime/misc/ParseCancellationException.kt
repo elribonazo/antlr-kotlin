@@ -19,15 +19,11 @@ import org.antlr.v4.kotlinruntime.RecognitionException
  */
 class ParseCancellationException : RuntimeException {
 
-    constructor() {}
-
-    constructor(message: String) {}
-
+    constructor(message: String): super(message)
     constructor(cause: RecognitionException):
             super("Error at [line ${cause.offendingToken?.line}, col ${cause.offendingToken?.charPositionInLine}] \"${cause.offendingToken?.text}\"")
 
     constructor(message: String, cause: RecognitionException):
             super("Error at [line ${cause.offendingToken?.line}, col ${cause.offendingToken?.charPositionInLine}] \"${cause.offendingToken?.text}\"")
-
 
 }
