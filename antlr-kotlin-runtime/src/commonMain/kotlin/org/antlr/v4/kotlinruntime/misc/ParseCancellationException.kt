@@ -23,14 +23,11 @@ class ParseCancellationException : RuntimeException {
 
     constructor(message: String) {}
 
-    constructor(cause: Throwable) {
-        TODO()
-        //initCause(cause)
-    }
+    constructor(cause: RecognitionException):
+            super("Error at [line ${cause.offendingToken?.line}, col ${cause.offendingToken?.charPositionInLine}] \"${cause.offendingToken?.text}\"")
 
-    constructor(message: String, cause: Throwable) {
-        TODO()
-        //initCause(cause)
-    }
+    constructor(message: String, cause: RecognitionException):
+            super("Error at [line ${cause.offendingToken?.line}, col ${cause.offendingToken?.charPositionInLine}] \"${cause.offendingToken?.text}\"")
+
 
 }
